@@ -1,5 +1,11 @@
 ## How to run the two apis
 
+This section assumes that, after cloning the repo, you run `cd api` in your terminal and installed all the dependencies with `npm install`.
+Additional dependencies not specified in `package.json` file could be:
+
+- typescript
+- tsc
+
 To start askChatGPT websocket server:
 
 ```
