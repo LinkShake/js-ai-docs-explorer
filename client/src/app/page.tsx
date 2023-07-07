@@ -98,7 +98,7 @@ export default function Page() {
   }, []);
 
   const SocketHandler = async () => {
-    socket = io("https://askchatgpt.onrender.com", {
+    socket = io("http://localhost:8000", {
       forceNew: true,
       reconnection: true,
     });
