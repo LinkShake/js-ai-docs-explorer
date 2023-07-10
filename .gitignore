@@ -5,6 +5,7 @@
 client/node_modules
 api/node_modules
 client/.next
+api/dist
 
 
 # See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
