@@ -145,12 +145,21 @@ export default function Page() {
     });
 
     socket.on("err", (err: any) => {
+      setSearchQuery("");
       if (containerRef?.current)
         containerRef.current.scrollTop = containerRef.current.scrollHeight;
-      //containerRef.current.scrollTop = containerRef.current.offsetHeight;
       setIsLoading(false);
       updateQueryDataArr((draft) => {
-        if (draft.length === 0) {
+        const i = draft.length - 1 >= 0 ? draft.length - 1 : 0;
+        if (draft.length !== 0 && Object.keys(draft[i]).length === 0)
+          draft[i] = {
+            originalQuery: err.originalQuery,
+            content:
+              err.msg === "No data"
+                ? "No matches found for your query"
+                : err.msg,
+          };
+        else
           draft.push({
             originalQuery: err.originalQuery,
             content:
@@ -158,15 +167,6 @@ export default function Page() {
                 ? "No matches found for your query"
                 : err.msg,
           });
-        } else {
-          draft[draft.length - 1] = {
-            originalQuery: err.originalQuery,
-            content:
-              err.msg === "No data"
-                ? "No matches found for your query"
-                : err.msg,
-          };
-        }
       });
       if (err.msg === "No data") {
         setQueryData("No matches found for your query");

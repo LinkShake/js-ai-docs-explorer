@@ -39,7 +39,12 @@ async function start() {
             })
           );
 
-          if (res.every((i) => i.length === 0))
+          if (
+            res.every((i) => {
+              console.log(i);
+              return i.length === 0;
+            })
+          )
             reply.status(404).send({ ok: false });
 
           return JSON.stringify({
@@ -102,7 +107,11 @@ async function start() {
                 }
               }
 
-              if (!res.length) reply.status(404).send({ ok: false });
+              if (!res.length) {
+                console.log("no results: ", res);
+                console.log("no results: ", res.length);
+                reply.status(404).send({ ok: false });
+              }
 
               return JSON.stringify({ data: res });
             }
