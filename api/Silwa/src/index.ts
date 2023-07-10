@@ -26,8 +26,7 @@ async function start() {
       try {
         //@ts-ignore
         const { query, index } = req.params;
-        //@ts-ignore
-        const possibleIndexes = req?.body.possibleIndexes;
+        const possibleIndexes = JSON.parse(req?.body as string).possibleIndexes;
         if (
           Array.isArray(possibleIndexes) &&
           possibleIndexes.every((currIdx) => currIdx)
