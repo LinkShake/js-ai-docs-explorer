@@ -29,7 +29,6 @@ export default function Page() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [queryData, setQueryData] = useState<string>("");
   const [queryDataArr, updateQueryDataArr] = useImmer<QueryData[]>([]);
-  const [currScrollHeight, setCurrScrollHeight] = useState<number | null>(null);
 
   const inputRef = useRef(
     null
