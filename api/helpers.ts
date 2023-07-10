@@ -86,7 +86,7 @@ export const doCognitiveQuery = async (query: string, currIndex: string) => {
     //@ts-ignore
     for (const curr_highlight of result.highlights?.content) {
       //@ts-ignore
-      res[0].content = curr_highlight;
+      res[0].content += curr_highlight;
     }
   }
 
@@ -104,7 +104,7 @@ export const doCognitiveQuery = async (query: string, currIndex: string) => {
       //@ts-ignore
       for (const curr_highlight of result.highlights?.content) {
         //@ts-ignore
-        res[0].content = curr_highlight;
+        res[0].content += curr_highlight;
       }
     }
 
@@ -119,7 +119,7 @@ export const doCognitiveQuery = async (query: string, currIndex: string) => {
         //@ts-ignore
         for (const curr_highlight of result.highlights?.content) {
           //@ts-ignore
-          res[0].content = curr_highlight;
+          res[0].content += curr_highlight;
         }
       }
 
