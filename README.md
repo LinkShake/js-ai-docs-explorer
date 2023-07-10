@@ -15,6 +15,7 @@ L’applicazione si compone di diversi moduli:
 - [Next.js](https://nextjs.org/) frontend
 - askChatGPT api: [socket](https://socket.io/) server che fa le richieste a ChatGPT
 - Silwa api: [Fastify](https://fastify.io/) endpoint per fare query a Cognitive e Azure SQL
+- [Clerk](https://clerk.dev/) per l'autenticazione
 
 ## Struttura della repo
 
