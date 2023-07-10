@@ -31,12 +31,8 @@ let msgs: GptMessage[] = [];
 
 io.on("connection", (socket) => {
   socket.on("askChatGPT", async (data) => {
-    console.log("enpoint hit");
     const { query, temperature, model, variant, index, possibleIndexes } = data;
     const threshold = model ? doMaxTokensCalc(model) : 16000;
-    console.log("index: ", index);
-    //console.log("msg: ", ms);
-    //const msgs: GptMessage[] = [] as GptMessage[];
     try {
       if (typeof query !== "string" || query === "") {
         socket.emit("err", { msg: "Not valid query" });
@@ -54,15 +50,10 @@ io.on("connection", (socket) => {
           }),
         }
       );
-      console.log(res);
       if (res.ok === false) {
         socket.emit("err", { msg: "No data", originalQuery: query });
       } else {
-        /*if (!res.ok) {
-        //socket.emit("err", { msg: "No data", originalQuery: query });
-      } else {*/
         const apiData = await res.json();
-        console.log("apiData: ");
         let { data: parsedData }: { data: string[] } = apiData;
         //checking if parsedData does not goes over the max token limit for gpt model
         if (parsedData.length > 0) {
@@ -94,8 +85,6 @@ io.on("connection", (socket) => {
             : query
         }`;
 
-        console.log(newQuery);
-
         msgs.push({ role: "user", content: newQuery });
 
         let cont = msgs.map((x) => x.content + x.role).join();
@@ -106,7 +95,6 @@ io.on("connection", (socket) => {
           cont = msgs.map((x) => x.role + x.content).join();
         }
 
-        //console.log(msgs.filter(({ role }) => role === "system"));
         const { data } = await openai.createChatCompletion(
           {
             model: model || "gpt-3.5-turbo-16k",
@@ -146,13 +134,11 @@ io.on("connection", (socket) => {
             const message = line.replace(/^data: /, "");
             if (message === "[DONE]") {
               msgs.push({ role: "system", content: gptRes });
-              //console.log(msgs.filter(({ role }) => role === "system"));
               socket.emit("askChatGPTResponse", { data: "DONE" });
               return;
             }
             try {
               const { choices } = JSON.parse(message);
-              //console.log(choices);
               const progressiveData = choices[0]?.delta?.content;
               gptRes += progressiveData;
               socket.emit("askChatGPTResponse", {
@@ -168,7 +154,6 @@ io.on("connection", (socket) => {
 
         //@ts-ignore
         data.on("close", () => {});
-        //}
       }
     } catch (err) {
       socket.emit("err", { msg: err });

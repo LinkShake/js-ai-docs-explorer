@@ -23,7 +23,6 @@ async function start() {
   app.post(
     "/cognitive/:query/:index",
     async function (req: FastifyRequest, reply) {
-      console.log("endpoint hit");
       try {
         //@ts-ignore
         const { query, index } = req.params;
@@ -39,12 +38,7 @@ async function start() {
             })
           );
 
-          if (
-            res.every((i) => {
-              console.log(i);
-              return i.length === 0;
-            })
-          )
+          if (res.every((i) => i.length === 0))
             reply.status(404).send({ ok: false });
 
           return JSON.stringify({
@@ -58,7 +52,6 @@ async function start() {
           const api_key = process.env.API_KEY as string;
 
           const optimizedQuery = optimizeQuery(query);
-          console.log("GUARDA QUI PROGRAMMATORE: ", optimizedQuery);
           const credentials = new AzureKeyCredential(api_key);
           const client = new SearchClient(endpoint, index || idx, credentials);
 
@@ -80,8 +73,6 @@ async function start() {
           if (res.length) return JSON.stringify({ data: res });
           //if not redo the process without stemming (sometimes this can be the issue)
           else {
-            const r = optimizeQuery(query, false);
-            console.log(r);
             results = await client.search(optimizeQuery(query, false), {
               highlightFields: "content",
               top: 1,
@@ -108,15 +99,11 @@ async function start() {
               }
 
               if (!res.length) {
-                console.log("no results: ", res);
-                console.log("no results: ", res.length);
                 reply.status(404).send({ ok: false });
               }
 
               return JSON.stringify({ data: res });
             }
-
-            console.log(res);
 
             return JSON.stringify({ data: res });
           }

@@ -141,7 +141,6 @@ export const Sidebar = () => {
           searchValue={index}
           defaultValue={index}
           onSearchChange={(e) => {
-            console.log(e);
             if (e) changeIndex(e);
             else changeIndex(possibleIndexes?.data[0]?.IndexId);
           }}

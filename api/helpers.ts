@@ -71,7 +71,6 @@ export const doCognitiveQuery = async (query: string, currIndex: string) => {
   const api_key = process.env.API_KEY as string;
 
   const optimizedQuery = optimizeQuery(query);
-  console.log("GUARDA QUI PROGRAMMATORE: ", optimizedQuery);
   const credentials = new AzureKeyCredential(api_key);
   const client = new SearchClient(endpoint, currIndex, credentials);
 
