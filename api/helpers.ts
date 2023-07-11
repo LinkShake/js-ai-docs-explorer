@@ -7,6 +7,11 @@ import { StemmerIt, StopwordsIt } from "@nlpjs/lang-it";
 import { StemmerEn, StopwordsEn } from "@nlpjs/lang-en";
 import { AzureKeyCredential, SearchClient } from "@azure/search-documents";
 
+interface QueryResult {
+  score: number;
+  content?: string;
+}
+
 //takes the natural language query and remove all stopping words
 //OLD FUNCTION
 /*export const formatQueryForSearch = (nlQuery: string) => {
@@ -79,13 +84,12 @@ export const doCognitiveQuery = async (query: string, currIndex: string) => {
     top: 1,
   });
 
-  let res = [];
+  let res: QueryResult[] = [];
 
   for await (const result of results.results) {
     res.push({ score: result.score });
     //@ts-ignore
     for (const curr_highlight of result.highlights?.content) {
-      //@ts-ignore
       res[0].content += curr_highlight;
     }
   }
@@ -103,7 +107,6 @@ export const doCognitiveQuery = async (query: string, currIndex: string) => {
       res.push({ score: result.score });
       //@ts-ignore
       for (const curr_highlight of result.highlights?.content) {
-        //@ts-ignore
         res[0].content += curr_highlight;
       }
     }
@@ -118,7 +121,6 @@ export const doCognitiveQuery = async (query: string, currIndex: string) => {
         res.push({ score: result.score });
         //@ts-ignore
         for (const curr_highlight of result.highlights?.content) {
-          //@ts-ignore
           res[0].content += curr_highlight;
         }
       }
