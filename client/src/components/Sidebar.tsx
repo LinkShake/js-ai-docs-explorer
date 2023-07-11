@@ -1,26 +1,24 @@
 "use client";
-import { Select, Slider } from "@mantine/core";
+import { Checkbox, Select, Slider } from "@mantine/core";
 import { useSettingsStore } from "../../lib/store";
 import { User } from "./User";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 import { useUser } from "@clerk/nextjs";
 import useSWR from "swr";
 
 type Models = "gpt-3.5-turbo" | "gpt-3.5-turbo-16k" | "gpt-3.5";
-
-interface Index {
-  IndexId: string;
-}
 
 export const Sidebar = () => {
   const {
     model,
     temperature,
     index,
+    useAllIndexes,
     changeModel,
     changeTemperature,
     changeIndex,
     changePossibleIndexes,
+    changeAllIndexes,
   } = useSettingsStore();
   const { user } = useUser();
   const ref = useRef(null) as React.MutableRefObject<HTMLInputElement | null>;
@@ -159,6 +157,19 @@ export const Sidebar = () => {
           }}
           classNames={{
             input: "index-input",
+          }}
+        />
+        <Checkbox
+          className="checkbox-retrieve-all-indexes"
+          label="Retrieve data from all indexes"
+          color="dark"
+          checked={useAllIndexes}
+          onChange={(e) => {
+            console.log(e.target.checked);
+            changeAllIndexes(e.target.checked);
+          }}
+          style={{
+            cursor: "pointer !important",
           }}
         />
         {/*<Button

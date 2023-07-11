@@ -31,7 +31,15 @@ let msgs: GptMessage[] = [];
 
 io.on("connection", (socket) => {
   socket.on("askChatGPT", async (data) => {
-    const { query, temperature, model, variant, index, possibleIndexes } = data;
+    const {
+      query,
+      temperature,
+      model,
+      variant,
+      index,
+      possibleIndexes,
+      useAllIndexes,
+    } = data;
     const threshold = model ? doMaxTokensCalc(model) : 16000;
     try {
       if (typeof query !== "string" || query === "") {
@@ -47,6 +55,7 @@ io.on("connection", (socket) => {
           method: "POST",
           body: JSON.stringify({
             possibleIndexes,
+            useAllIndexes,
           }),
         }
       );

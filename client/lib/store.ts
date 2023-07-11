@@ -16,10 +16,12 @@ interface SettingsState {
   temperature: number;
   index: string;
   possibleIndexes: any[];
+  useAllIndexes: boolean;
   changeModel: (newModel: Models) => void;
   changeIndex: (newIndex: string) => void;
   changeTemperature: (newTemperature: number) => void;
   changePossibleIndexes: (indexes: any[]) => void;
+  changeAllIndexes: (value: boolean) => void;
 }
 
 export const useUiStore = create<UiState>((set) => ({
@@ -36,10 +38,12 @@ export const useSettingsStore = create<SettingsState>((set) => ({
   temperature: 0.1,
   index: "",
   possibleIndexes: [],
+  useAllIndexes: true,
   changeModel: (newModel) => set((state) => ({ model: newModel })),
   changeIndex: (newIndex) => set((state) => ({ index: newIndex })),
   changeTemperature: (newTemperature) =>
     set((state) => ({ temperature: newTemperature })),
   changePossibleIndexes: (indexes) =>
     set((state) => ({ possibleIndexes: indexes })),
+  changeAllIndexes: (value) => set((state) => ({ useAllIndexes: value })),
 }));

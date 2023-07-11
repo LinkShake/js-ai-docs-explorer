@@ -49,7 +49,8 @@ export default function Page() {
     originalQuery,
     newData,
   } = useUiStore();
-  const { model, temperature, index, possibleIndexes } = useSettingsStore();
+  const { model, temperature, index, possibleIndexes, useAllIndexes } =
+    useSettingsStore();
 
   const onComponentDidMount = () => {
     if (containerRef?.current)
@@ -78,6 +79,7 @@ export default function Page() {
         ms: queryDataArr,
         index,
         possibleIndexes,
+        useAllIndexes,
       });
 
       setSearchQuery("");

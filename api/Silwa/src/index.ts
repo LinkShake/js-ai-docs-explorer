@@ -27,9 +27,11 @@ async function start() {
         //@ts-ignore
         const { query, index } = req.params;
         const possibleIndexes = JSON.parse(req?.body as string).possibleIndexes;
-        /*if (
+        const useAllIndexes = JSON.parse(req?.body as string).useAllIndexes;
+        if (
           Array.isArray(possibleIndexes) &&
-          possibleIndexes.every((currIdx) => currIdx)
+          possibleIndexes.every((currIdx) => currIdx) &&
+          useAllIndexes
         ) {
           const res: any[] = await Promise.all(
             possibleIndexes.map(async (currIdx: string) => {
@@ -45,37 +47,21 @@ async function start() {
               .sort((a, b) => b.score - a.score)
               .map(({ content }: { content: string }) => content),
           });
-        } else {*/
-        const idx = process.env.INDEX as string;
-        const endpoint = process.env.SEARCH_ENDPOINT as string;
-        const api_key = process.env.API_KEY as string;
+        } else {
+          const idx = process.env.INDEX as string;
+          const endpoint = process.env.SEARCH_ENDPOINT as string;
+          const api_key = process.env.API_KEY as string;
 
-        const optimizedQuery = optimizeQuery(query);
-        const credentials = new AzureKeyCredential(api_key);
-        const client = new SearchClient(endpoint, index || idx, credentials);
+          const optimizedQuery = optimizeQuery(query);
+          const credentials = new AzureKeyCredential(api_key);
+          const client = new SearchClient(endpoint, index || idx, credentials);
 
-        let results = await client.search(optimizedQuery, {
-          highlightFields: "content",
-          top: 1,
-        });
-
-        let res = [];
-
-        for await (const result of results.results) {
-          //@ts-ignore
-          for (const curr_highlight of result.highlights?.content) {
-            res.push(curr_highlight);
-          }
-        }
-
-        //if there some cognitive search data return them
-        if (res.length) return JSON.stringify({ data: res });
-        //if not redo the process without stemming (sometimes this can be the issue)
-        else {
-          results = await client.search(optimizeQuery(query, false), {
+          let results = await client.search(optimizedQuery, {
             highlightFields: "content",
             top: 1,
           });
+
+          let res = [];
 
           for await (const result of results.results) {
             //@ts-ignore
@@ -84,8 +70,11 @@ async function start() {
             }
           }
 
-          if (!res.length) {
-            results = await client.search(query, {
+          //if there some cognitive search data return them
+          if (res.length) return JSON.stringify({ data: res });
+          //if not redo the process without stemming (sometimes this can be the issue)
+          else {
+            results = await client.search(optimizeQuery(query, false), {
               highlightFields: "content",
               top: 1,
             });
@@ -98,15 +87,28 @@ async function start() {
             }
 
             if (!res.length) {
-              reply.status(404).send({ ok: false });
+              results = await client.search(query, {
+                highlightFields: "content",
+                top: 1,
+              });
+
+              for await (const result of results.results) {
+                //@ts-ignore
+                for (const curr_highlight of result.highlights?.content) {
+                  res.push(curr_highlight);
+                }
+              }
+
+              if (!res.length) {
+                reply.status(404).send({ ok: false });
+              }
+
+              return JSON.stringify({ data: res });
             }
 
             return JSON.stringify({ data: res });
           }
-
-          return JSON.stringify({ data: res });
         }
-        //}
       } catch (err) {
         return new Error(`Err: ${err}`);
       }
