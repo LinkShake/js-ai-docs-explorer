@@ -23,7 +23,7 @@ interface SettingsState {
 }
 
 export const useUiStore = create<UiState>((set) => ({
-  newData: true,
+  newData: false,
   originalQuery: "",
   isLoading: false,
   setNewData: (value) => set((state) => ({ newData: value })),
