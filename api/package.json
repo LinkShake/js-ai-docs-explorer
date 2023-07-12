@@ -19,6 +19,8 @@
   "license": "ISC",
   "dependencies": {
     "@azure/search-documents": "^11.3.1",
+    "@clerk/clerk-sdk-node": "^4.10.15",
+    "@clerk/fastify": "^0.5.7",
     "@nlpjs/lang-en": "^4.26.1",
     "@nlpjs/lang-it": "^4.26.1",
     "@types/mssql": "^8.1.2",

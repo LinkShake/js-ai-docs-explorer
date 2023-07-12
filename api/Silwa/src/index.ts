@@ -4,6 +4,7 @@ import fastify, { FastifyRequest } from "fastify";
 import cors from "@fastify/cors";
 import { AzureKeyCredential, SearchClient } from "@azure/search-documents";
 import { doCognitiveQuery, optimizeQuery } from "../../helpers";
+import { clerkClient, clerkPlugin, getAuth } from "@clerk/fastify";
 import * as sql from "mssql";
 
 async function start() {
@@ -20,6 +21,8 @@ async function start() {
     allowedHeaders: ["Authorization", "Content-Type"],
   });
 
+  await app.register(clerkPlugin);
+
   app.post(
     "/cognitive/:query/:index",
     async function (req: FastifyRequest, reply) {
@@ -28,6 +31,14 @@ async function start() {
         const { query, index } = req.params;
         const possibleIndexes = JSON.parse(req?.body as string).possibleIndexes;
         const useAllIndexes = JSON.parse(req?.body as string).useAllIndexes;
+        const userId = JSON.parse(req?.body as string).userId;
+        if (!userId) {
+          reply.status(401).send({ msg: "User not authenticated" });
+        }
+        const user = await clerkClient.users.getUser(userId);
+        if (!user) {
+          reply.status(401).send({ msg: "User not authenticated" });
+        }
         if (
           Array.isArray(possibleIndexes) &&
           possibleIndexes.every((currIdx) => currIdx) &&

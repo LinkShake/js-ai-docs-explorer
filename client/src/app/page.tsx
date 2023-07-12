@@ -12,6 +12,7 @@ import { useImmer } from "use-immer";
 import { BtnRegenerateRes } from "@/components/BtnRegenerateRes";
 import { useWindowSize } from "@/hooks/useWindowSize";
 import { useMediaQuery } from "@mantine/hooks";
+import { useUser } from "@clerk/nextjs";
 
 interface CustomError {
   message?: string;
@@ -25,6 +26,8 @@ interface QueryData {
 let socket: any;
 
 export default function Page() {
+  const { user } = useUser();
+
   const [opened, setOpened] = useState(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [queryData, setQueryData] = useState<string>("");
@@ -76,10 +79,10 @@ export default function Page() {
         model,
         temperature,
         variant,
-        ms: queryDataArr,
         index,
         possibleIndexes,
         useAllIndexes,
+        userId: user?.id,
       });
 
       setSearchQuery("");

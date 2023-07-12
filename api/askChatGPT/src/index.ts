@@ -5,6 +5,7 @@ import LanguageDetect from "languagedetect";
 import { Configuration, OpenAIApi } from "openai";
 import { Server } from "socket.io";
 import { doMaxTokensCalc } from "../../helpers";
+import clerk from "@clerk/clerk-sdk-node";
 
 interface GptMessage {
   role: "assistant" | "user" | "function" | "system";
@@ -39,7 +40,18 @@ io.on("connection", (socket) => {
       index,
       possibleIndexes,
       useAllIndexes,
+      userId,
     } = data;
+    if (!userId) {
+      socket.emit("err", {
+        msg: "Error while authenticating the user. Try again later",
+      });
+    }
+    console.log(userId);
+    const user = await clerk.users.getUser(userId);
+    if (!user) {
+      socket.emit("err", { msg: "User not authenticated" });
+    }
     const threshold = model ? doMaxTokensCalc(model) : 16000;
     try {
       if (typeof query !== "string" || query === "") {
@@ -57,9 +69,13 @@ io.on("connection", (socket) => {
           body: JSON.stringify({
             possibleIndexes,
             useAllIndexes,
+            userId,
           }),
         }
       );
+      if (res.status === 401) {
+        socket.emit("err", { msg: "User not authenticated" });
+      }
       /*if (res.ok === false) {
         socket.emit("err", { msg: "No data", originalQuery: query });
       } else {*/
