@@ -34,10 +34,12 @@ async function start() {
         const userId = JSON.parse(req?.body as string).userId;
         if (!userId) {
           reply.status(401).send({ msg: "User not authenticated" });
+          return;
         }
         const user = await clerkClient.users.getUser(userId);
         if (!user) {
           reply.status(401).send({ msg: "User not authenticated" });
+          return;
         }
         if (
           Array.isArray(possibleIndexes) &&

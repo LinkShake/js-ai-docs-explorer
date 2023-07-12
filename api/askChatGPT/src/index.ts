@@ -46,11 +46,13 @@ io.on("connection", (socket) => {
       socket.emit("err", {
         msg: "Error while authenticating the user. Try again later",
       });
+      return;
     }
     console.log(userId);
     const user = await clerk.users.getUser(userId);
     if (!user) {
       socket.emit("err", { msg: "User not authenticated" });
+      return;
     }
     const threshold = model ? doMaxTokensCalc(model) : 16000;
     try {
@@ -75,6 +77,7 @@ io.on("connection", (socket) => {
       );
       if (res.status === 401) {
         socket.emit("err", { msg: "User not authenticated" });
+        return;
       }
       /*if (res.ok === false) {
         socket.emit("err", { msg: "No data", originalQuery: query });
