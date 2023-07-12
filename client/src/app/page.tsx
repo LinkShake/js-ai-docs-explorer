@@ -283,6 +283,7 @@ export default function Page() {
           //backgroundColor: "#9ca3af",
           backgroundColor: "white",
           position: "fixed",
+          left: match ? 0 : "auto",
           //border: "2px solid red",
         }}
       >

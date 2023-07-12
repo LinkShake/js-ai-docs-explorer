@@ -12,6 +12,7 @@
     "start-silwa": "ts-node Silwa/src/index.ts",
     "dev-silwa": "nodemon --exec ts-node Silwa/src/index.ts",
     "dev-silwa-js": "nodemon dist/Silwa/src/index.js",
+    "dev-cs": "nodemon --exec ts-node csServer/src/index.ts",
     "debug": "nodemon --exec node --inspect-brk -r ts-node/register askChatGPT/src/index.ts"
   },
   "keywords": [],
