@@ -22,6 +22,7 @@ export const Sidebar = () => {
   } = useSettingsStore();
   const { user } = useUser();
   const ref = useRef(null) as React.MutableRefObject<HTMLInputElement | null>;
+  //dynamically fetching indexes associated to the userId
   const { data: possibleIndexes } = useSWR(
     `http://localhost:4000/sql/${user?.id}`,
     (...args) => fetch(...args).then((res) => res.json())
@@ -164,10 +165,7 @@ export const Sidebar = () => {
           label="Retrieve data from all indexes"
           color="dark"
           checked={useAllIndexes}
-          onChange={(e) => {
-            console.log(e.target.checked);
-            changeAllIndexes(e.target.checked);
-          }}
+          onChange={(e) => changeAllIndexes(e.target.checked)}
           style={{
             cursor: "pointer !important",
           }}

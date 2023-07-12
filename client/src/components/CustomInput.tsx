@@ -22,7 +22,6 @@ export const CustomInput: React.FC<CustomInputProps> = ({
   const match = useMediaQuery("(max-width: 768px)");
   const matchLg = useMediaQuery("(min-width: 75em)");
   const { width } = useWindowSize();
-  const { newData, isLoading } = useUiStore();
   const ref = useRef(null);
 
   useEffect(() => {}, []);

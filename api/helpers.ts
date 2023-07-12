@@ -38,11 +38,13 @@ export const optimizeQuery = (nlQuery: string, useStemming: boolean = true) => {
     const stemmer = new StemmerIt();
     stemmer.stopwords = new StopwordsIt();
     if (useStemming) {
+      //does stemming and removes stopping words
       const arr = stemmer.tokenizeAndStem(nlQuery, false);
       arr.forEach((item: string) => {
         optimizedQuery += `${item} `;
       });
     } else {
+      //only removes stopping words
       const stopwords = new StopwordsIt();
       const arr = stopwords.removeStopwords(nlQuery.split(" "));
       arr.forEach((item: string) => {
@@ -71,6 +73,7 @@ export const optimizeQuery = (nlQuery: string, useStemming: boolean = true) => {
   }
 };
 
+//cognitive query helper
 export const doCognitiveQuery = async (query: string, currIndex: string) => {
   const endpoint = process.env.SEARCH_ENDPOINT as string;
   const api_key = process.env.API_KEY as string;
@@ -134,6 +137,7 @@ export const doCognitiveQuery = async (query: string, currIndex: string) => {
   }
 };
 
+//max tokens calc for gpt model
 export const doMaxTokensCalc = (model: string) => {
   if (model === "gpt-3.5-turbo-16k") {
     return 16000;

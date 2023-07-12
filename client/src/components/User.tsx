@@ -1,6 +1,7 @@
 "use client";
 import { UserButton, useUser } from "@clerk/nextjs";
 
+//display user data
 export const User = () => {
   const { user } = useUser();
 

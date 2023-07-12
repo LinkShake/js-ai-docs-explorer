@@ -60,13 +60,14 @@ export default function Page() {
       containerRef.current.scrollTop = containerRef.current.scrollHeight;
   };
 
+  //handle submit and regenerate btn events
   const onBtnEvent = async (variant: "submit" | "regenerate" = "submit") => {
     setNewData(true);
     setQueryData("");
     if (variant === "regenerate")
       updateQueryDataArr((draft) => {
         const i = draft.length - 1 >= 0 ? draft.length - 1 : 0;
-        draft[i].content = "";
+        draft[i].content = ""; //clear the content of the last element
       });
 
     setIsLoading(true);
@@ -75,6 +76,7 @@ export default function Page() {
     }
     try {
       socket.emit("askChatGPT", {
+        //emit event to socket server with query, model, temperature, variant, index, possibleIndexes, useAllIndexes option and also userId
         query: variant === "regenerate" ? originalQuery : searchQuery,
         model,
         temperature,
@@ -85,7 +87,7 @@ export default function Page() {
         userId: user?.id,
       });
 
-      setSearchQuery("");
+      setSearchQuery(""); //empty the search query
     } catch (err) {
       const typedErr = err as CustomError;
       setQueryData(typedErr?.message as string);
@@ -110,9 +112,10 @@ export default function Page() {
     socket.on("askChatGPTResponse", (data: any) => {
       setSearchQuery("");
       if (containerRef?.current)
-        containerRef.current.scrollTop = containerRef.current.scrollHeight;
+        containerRef.current.scrollTop = containerRef.current.scrollHeight; //scroll to bottom of the container
       setIsLoading(false);
       if (data.data === "DONE") {
+        //all the response data have been streamed
         setNewData(false);
         setSearchQuery("");
       }
@@ -126,17 +129,20 @@ export default function Page() {
             updateQueryDataArr((draft) => {
               const i = draft.length - 1 >= 0 ? draft.length - 1 : 0;
               if (!prev) {
+                //case draft[i] = { } and draft is not empty, with prev = "" (that means for streaming for that query)
                 if (draft.length !== 0 && Object.keys(draft[i]).length === 0)
                   draft[i] = {
                     originalQuery: data.originalQuery,
                     content: data.data,
                   };
+                //case prev = "" and draft is empty
                 else
                   draft.push({
                     originalQuery: data.originalQuery,
                     content: data.data,
                   });
               } else {
+                //when it is not the first stream for that query
                 //this else statement gets hit also when btn regenerate is clicked
                 draft[i].content = prev + data.data;
                 draft[i].originalQuery = data.originalQuery;

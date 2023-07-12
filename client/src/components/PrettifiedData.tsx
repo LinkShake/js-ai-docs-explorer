@@ -61,6 +61,7 @@ export const PrettifiedData: React.FC<PrettifiedDataProps> = ({ data }) => {
           </div>
         </>
       );
+    //formatting the data
     const parsedData = content
       ?.replaceAll("<em>", "")
       .replaceAll("</em>", "")

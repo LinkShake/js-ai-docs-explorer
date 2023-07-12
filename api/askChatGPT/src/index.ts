@@ -28,6 +28,7 @@ const config = new Configuration({
 
 const openai = new OpenAIApi(config);
 
+//history of the chatbot
 let msgs: GptMessage[] = [];
 
 io.on("connection", (socket) => {
@@ -42,6 +43,7 @@ io.on("connection", (socket) => {
       useAllIndexes,
       userId,
     } = data;
+    //the userId could be undefined because on the first request from the client the user data have still to load
     if (!userId) {
       socket.emit("err", {
         msg: "Error while authenticating the user. Try again later",
@@ -49,11 +51,13 @@ io.on("connection", (socket) => {
       return;
     }
     console.log(userId);
+    //if userId: check if clerk user exists
     const user = await clerk.users.getUser(userId);
     if (!user) {
       socket.emit("err", { msg: "User not authenticated" });
       return;
     }
+    //threshold of max tokens for gpt model
     const threshold = model ? doMaxTokensCalc(model) : 16000;
     try {
       if (typeof query !== "string" || query === "") {
@@ -79,9 +83,7 @@ io.on("connection", (socket) => {
         socket.emit("err", { msg: "User not authenticated" });
         return;
       }
-      /*if (res.ok === false) {
-        socket.emit("err", { msg: "No data", originalQuery: query });
-      } else {*/
+
       const apiData = await res.json();
       let { data: parsedData }: { data: string[] } = apiData;
       if (parsedData)
@@ -113,10 +115,11 @@ io.on("connection", (socket) => {
           : query
       }`;
 
+      //updating chat history with user query
       msgs.push({ role: "user", content: newQuery });
 
       let cont = msgs.map((x) => x.content + x.role).join();
-      //msgs.forEach((x) => (cont += x.role + x.content));
+      //checking if the content goes over the max token limit for gpt model
       while (cont.length > threshold) {
         msgs = msgs.slice(1);
         cont = "";
@@ -134,6 +137,8 @@ io.on("connection", (socket) => {
           responseType: "stream",
         }
       );
+
+      //data streaming of chatgpt reponse
 
       socket.emit("askChatGPTResponse", {
         data: `${

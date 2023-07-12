@@ -36,11 +36,13 @@ async function start() {
           reply.status(401).send({ msg: "User not authenticated" });
           return;
         }
+        //retrieve user data from clerk
         const user = await clerkClient.users.getUser(userId);
         if (!user) {
           reply.status(401).send({ msg: "User not authenticated" });
           return;
         }
+        //if the user wants to search all indexes and the possibleIndexes array is not empty, we retrieve data from each index of cognitive search
         if (
           Array.isArray(possibleIndexes) &&
           possibleIndexes.every((currIdx) => currIdx) &&
@@ -52,9 +54,11 @@ async function start() {
             })
           );
 
+          //checking if array is not empty
           if (res.every((i) => i.length === 0))
             reply.status(404).send({ ok: false });
 
+          //sorting results based on score
           return JSON.stringify({
             data: res
               .sort((a, b) => b.score - a.score)
