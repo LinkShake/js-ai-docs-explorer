@@ -4,7 +4,7 @@ import fastify, { FastifyRequest } from "fastify";
 import cors from "@fastify/cors";
 import { AzureKeyCredential, SearchClient } from "@azure/search-documents";
 import { doCognitiveQuery, optimizeQuery } from "../../helpers";
-import { clerkClient, clerkPlugin, getAuth } from "@clerk/fastify";
+import { clerkClient, clerkPlugin } from "@clerk/fastify";
 import * as sql from "mssql";
 
 async function start() {

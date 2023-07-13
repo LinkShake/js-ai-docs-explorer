@@ -26,3 +26,5 @@ In order to be able to run the apis and use them you should add to a `.env` file
 - `API_KEY` (azure api key related to cognitive search resource)
 - `SEARCH_ENDPOINT` (endpoint of cognitive search u can find directly on azure portal)
 - `OPENAI_KEY` (your api key of openai account)
+- `CLERK_PUBLISHABLE_KEY` (publishable key given to you from clerk)
+- `CLERK_SECRET_KEY` (secret key given to you from clerk)
