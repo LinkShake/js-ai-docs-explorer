@@ -4,7 +4,6 @@ import fastify, { FastifyRequest } from "fastify";
 import cors from "@fastify/cors";
 import { AzureKeyCredential, SearchClient } from "@azure/search-documents";
 import { doCognitiveQuery, optimizeQuery } from "../../helpers";
-import { clerkClient, clerkPlugin } from "@clerk/fastify";
 import * as sql from "mssql";
 
 async function start() {
@@ -21,8 +20,6 @@ async function start() {
     allowedHeaders: ["Authorization", "Content-Type"],
   });
 
-  await app.register(clerkPlugin);
-
   app.post(
     "/cognitive/:query/:index",
     async function (req: FastifyRequest, reply) {
@@ -31,17 +28,6 @@ async function start() {
         const { query, index } = req.params;
         const possibleIndexes = JSON.parse(req?.body as string).possibleIndexes;
         const useAllIndexes = JSON.parse(req?.body as string).useAllIndexes;
-        const userId = JSON.parse(req?.body as string).userId;
-        if (!userId) {
-          reply.status(401).send({ msg: "User not authenticated" });
-          return;
-        }
-        //retrieve user data from clerk
-        const user = await clerkClient.users.getUser(userId);
-        if (!user) {
-          reply.status(401).send({ msg: "User not authenticated" });
-          return;
-        }
         //if the user wants to search all indexes and the possibleIndexes array is not empty, we retrieve data from each index of cognitive search
         if (
           Array.isArray(possibleIndexes) &&
@@ -137,11 +123,11 @@ async function start() {
       //@ts-ignore
       const { id } = req.params;
       const config: sql.config = {
-        user: "Nicola",
+        user: process.env.UID,
         password: process.env.PASS,
         //prettier-ignore
-        server: "stesi-sql-server.database.windows.net",
-        database: "SilwaAiDocsExplorer",
+        server: process.env.DB_SERVER as string,
+        database: process.env.DATABASE as string,
         options: {
           encrypt: true,
         },

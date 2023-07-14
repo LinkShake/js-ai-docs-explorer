@@ -5,8 +5,6 @@ import cors from "@fastify/cors";
 import fetch from "node-fetch";
 import { Configuration, OpenAIApi } from "openai";
 import LanguageDetect from "languagedetect";
-import { open } from "fs";
-import { dot } from "node:test/reporters";
 
 let msgs = [] as any[];
 
