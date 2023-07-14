@@ -22,6 +22,12 @@ To Silwa fastify endpoint:
 npm run dev-silwa
 ```
 
+To start csServer (askChatGPT api but with normal fetch endpoint):
+
+```
+npm run dev-cs
+```
+
 ## Setting up the project
 
 In order to be able to run the apis and use them you should add to a `.env` file the following:
