@@ -15,7 +15,13 @@ export default function Error({
   }, [error]);
 
   return (
-    <div>
+    <div
+      style={{
+        width: "100vw",
+        height: "100vh",
+        backgroundColor: "white !important",
+      }}
+    >
       <h2>Something went wrong!</h2>
       <button
         onClick={

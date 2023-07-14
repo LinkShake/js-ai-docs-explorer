@@ -1,3 +1,13 @@
 export default function LoadingComp() {
-  return <div>loading...</div>;
+  return (
+    <div
+      style={{
+        width: "100vw",
+        height: "100vh",
+        backgroundColor: "white !important",
+      }}
+    >
+      loading...
+    </div>
+  );
 }
